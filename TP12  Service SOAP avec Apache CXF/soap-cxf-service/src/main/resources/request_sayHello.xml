@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" 
+               xmlns:api="http://api.cxf.acme.com/">
+   <soap:Body>
+      <api:sayHello>
+         <name>Alice</name>
+      </api:sayHello>
+   </soap:Body>
+</soap:Envelope>

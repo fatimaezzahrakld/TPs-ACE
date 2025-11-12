@@ -1,0 +1,6 @@
+com\acme\cxf\model\Person.class
+com\acme\cxf\App.class
+com\acme\cxf\impl\HelloServiceImpl.class
+com\acme\cxf\api\HelloService.class
+com\acme\cxf\Server.class
+com\acme\cxf\client\SoapClient.class
