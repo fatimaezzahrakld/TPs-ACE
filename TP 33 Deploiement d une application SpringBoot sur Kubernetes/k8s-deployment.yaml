@@ -1,0 +1,62 @@
+# Kubernetes Deployment for Cloud Microservice Platform
+# This deployment creates 2 replicas of the application for high availability
+# Author: Kelladi fatimaezzahra
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-platform-deployment
+  namespace: cloud-platform
+  labels:
+    app: cloud-microservice
+    version: "1.0.0"
+    managed-by: kubernetes
+    author: aitali-yassir
+spec:
+  # Number of pod replicas for load balancing and high availability
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloud-microservice
+  template:
+    metadata:
+      labels:
+        app: cloud-microservice
+        version: "1.0.0"
+    spec:
+      containers:
+        - name: cloud-microservice-container
+          image: cloud-microservice-platform:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+              name: http
+              protocol: TCP
+          # Environment variables injected from the ConfigMap
+          env:
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: cloud-platform-config
+                  key: app.message
+          # Resource limits and requests for optimal performance
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          # Liveness probe to check if the container is running
+          livenessProbe:
+            httpGet:
+              path: /api/hello
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          # Readiness probe to check if the container is ready to serve traffic
+          readinessProbe:
+            httpGet:
+              path: /api/hello
+              port: 8081
+            initialDelaySeconds: 20
+            periodSeconds: 5

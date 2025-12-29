@@ -1,0 +1,8 @@
+# Ignore files for Docker builds
+*.jar
+*.war
+target/
+.dockerignore
+.git
+.gitignore
+.gitattributes

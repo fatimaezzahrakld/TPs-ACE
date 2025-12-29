@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: amqp-message-sender-test
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+rabbitmq:
+  exchange:
+    name: test.exchange
+  queue:
+    name: test.queue
+  routing:
+    key: test.routingkey
+
+logging:
+  level:
+    com.kldfatima: DEBUG

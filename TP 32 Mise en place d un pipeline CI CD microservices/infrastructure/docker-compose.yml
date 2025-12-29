@@ -1,0 +1,136 @@
+version: '3.8'
+
+# Architecture de microservices - fatimaezzahrakld
+# Système de gestion de flotte automobile et clients
+
+services:
+  # Service de base de données MySQL
+  mysql-database:
+    image: mysql:latest
+    container_name: mysql-database-container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_CLIENT}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service de découverte Consul
+  consul-discovery:
+    image: consul:1.15.4
+    container_name: consul-discovery-container
+    ports:
+      - "${CONSUL_PORT:-8500}:8500"
+    networks:
+      - microservices-network
+
+  # Serveur de registre Eureka
+  registry-server:
+    build:
+      context: ../registry-server
+    container_name: registry-server-container
+    ports:
+      - "${EUREKA_PORT:-8761}:8761"
+    networks:
+      - microservices-network
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_INSTANCE_HOSTNAME: registry-server
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: 'false'
+      EUREKA_CLIENT_FETCH_REGISTRY: 'false'
+
+  # Passerelle de routage API
+  routing-gateway:
+    build:
+      context: ../routing-gateway
+    container_name: routing-gateway-container
+    ports:
+      - "${GATEWAY_PORT:-8888}:8888"
+    depends_on:
+      mysql-database:
+        condition: service_healthy
+      consul-discovery:
+        condition: service_started
+      registry-server:
+        condition: service_started
+    networks:
+      - microservices-network
+    environment:
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry-server:8761/eureka/
+      SPRING_CLOUD_CONSUL_HOST: ${CONSUL_HOST:-consul-discovery}
+      SPRING_CLOUD_CONSUL_PORT: ${CONSUL_PORT:-8500}
+
+  # Service de gestion des clients
+  client-management:
+    build:
+      context: ../client-management-core
+    container_name: client-management-container
+    ports:
+      - "${CLIENT_PORT:-8081}:8081"
+    depends_on:
+      mysql-database:
+        condition: service_healthy
+      consul-discovery:
+        condition: service_started
+      routing-gateway:
+        condition: service_started
+      registry-server:
+        condition: service_started
+    networks:
+      - microservices-network
+    environment:
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry-server:8761/eureka/
+      SPRING_CLOUD_CONSUL_HOST: ${CONSUL_HOST:-consul-discovery}
+      SPRING_CLOUD_CONSUL_PORT: ${CONSUL_PORT:-8500}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_CLIENT}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+
+  # Service de gestion de flotte automobile
+  fleet-management:
+    build:
+      context: ../automobile-fleet-core
+    container_name: fleet-management-container
+    ports:
+      - "${FLEET_PORT:-8082}:8082"
+    depends_on:
+      mysql-database:
+        condition: service_healthy
+      consul-discovery:
+        condition: service_started
+      routing-gateway:
+        condition: service_started
+      registry-server:
+        condition: service_started
+    networks:
+      - microservices-network
+    environment:
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry-server:8761/eureka/
+      SPRING_CLOUD_CONSUL_HOST: ${CONSUL_HOST:-consul-discovery}
+      SPRING_CLOUD_CONSUL_PORT: ${CONSUL_PORT:-8500}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_FLEET}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+
+  # Interface phpMyAdmin pour la gestion de la base de données
+  phpmyadmin-interface:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-container
+    environment:
+      PMA_HOST: mysql-database
+      PMA_PORT: ${MYSQL_PORT:-3306}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${PHPMYADMIN_PORT:-8083}:80"
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge

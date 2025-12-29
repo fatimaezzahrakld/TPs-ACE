@@ -1,0 +1,49 @@
+# Docker Compose for Local Development
+# This file provides a MySQL database and the Spring Boot application for local testing
+# Author: Kelladi fatimaezzahra
+
+version: '3.8'
+
+services:
+  database-mysql:
+    image: mysql:8.0
+    container_name: cloud-platform-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cloud_platform_db
+      MYSQL_USER: platform_user
+      MYSQL_PASSWORD: platform_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_persistence_data:/var/lib/mysql
+    networks:
+      - cloud-platform-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cloud-application:
+    build: .
+    container_name: cloud-platform-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database-mysql:3306/cloud_platform_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: platform_user
+      SPRING_DATASOURCE_PASSWORD: platform_secret
+      APP_MESSAGE: "Welcome from Docker Compose - Cloud Platform by Kelladi fatimaezzahra!"
+    ports:
+      - "8081:8081"
+    depends_on:
+      database-mysql:
+        condition: service_healthy
+    networks:
+      - cloud-platform-network
+
+volumes:
+  mysql_persistence_data:
+
+networks:
+  cloud-platform-network:
+    driver: bridge

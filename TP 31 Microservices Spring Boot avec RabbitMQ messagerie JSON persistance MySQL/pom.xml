@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.fatimaezzahrakld</groupId>
+    <artifactId>tp31-ace-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>TP31 ACE - RabbitMQ Microservices Parent</name>
+    <description>Parent POM for RabbitMQ Microservices Spring Boot Messaging Architecture</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- Updated from 3.2.0 to 3.4.1 to fix multiple CVEs including:
+             - CVE-2024-22233: Spring Framework access control bypass
+             - CVE-2024-22234: Spring Security authorization bypass
+             - CVE-2024-22243: Spring Web URL parsing issues
+             - CVE-2024-22259: Spring Framework URL parsing vulnerability
+             - CVE-2024-22262: Spring Framework redirect URL bypass
+             - CVE-2024-38809: Spring Framework DoS vulnerability
+             - CVE-2024-38816: Spring Framework path traversal vulnerability
+             - CVE-2024-38819: Spring Framework functional web frameworks path traversal
+             - CVE-2024-38820: Spring Framework case sensitivity issue -->
+        <version>3.4.1</version>
+        <relativePath/>
+    </parent>
+
+    <modules>
+        <module>amqp-message-sender</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!-- CVE Fixes: Override vulnerable dependency versions -->
+        <!-- SnakeYAML: Fix CVE-2022-1471 (Critical - RCE via deserialization) -->
+        <snakeyaml.version>2.3</snakeyaml.version>
+        <!-- Logback: Fix CVE-2023-6378, CVE-2023-6481 (High - DoS vulnerabilities) -->
+        <logback.version>1.5.13</logback.version>
+        <!-- Jackson: Ensure latest secure version -->
+        <jackson-bom.version>2.18.2</jackson-bom.version>
+        <!-- Tomcat: Fix CVE-2024-23672, CVE-2024-24549 (High - DoS vulnerabilities) -->
+        <tomcat.version>10.1.34</tomcat.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.4.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <!-- Explicit CVE fixes for transitive dependencies -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

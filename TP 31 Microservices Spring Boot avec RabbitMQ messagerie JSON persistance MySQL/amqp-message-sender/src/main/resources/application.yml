@@ -1,0 +1,24 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: amqp-message-sender
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+rabbitmq:
+  exchange:
+    name: user.exchange
+  queue:
+    name: user.queue
+  routing:
+    key: user.routingkey
+
+logging:
+  level:
+    com.fatimaezzahrakld: DEBUG
+    org.springframework.amqp: INFO

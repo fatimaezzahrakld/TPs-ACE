@@ -1,0 +1,39 @@
+# Configuration du service de gestion des clients
+# Microservice Client Management - fatimaezzahrakld
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: CLIENT-MANAGEMENT-SERVICE
+  
+  # Configuration de la source de données
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/clientmanagementdb?createDatabaseIfNotExist=true
+    username: "root"
+    password: ""
+  
+  # Configuration JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  # Configuration Cloud
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+      discovery:
+        enabled: true
+        register: true
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://registry-server:8761/eureka/
+        register-with-eureka: true
+        fetch-registry: true
+      instance:
+        prefer-ip-address: true

@@ -1,0 +1,5 @@
+C:\Users\kldfatima\Desktop\TP_31\amqp-message-sender\src\main\java\com\fatimaezzahrakld\amqp\sender\AmqpMessageSenderApplication.java
+C:\Users\kldfatima\Desktop\TP_31\amqp-message-sender\src\main\java\com\fatimaezzahrakld\amqp\sender\api\MessageController.java
+C:\Users\kldfatima\Desktop\TP_31\amqp-message-sender\src\main\java\com\fatimaezzahrakld\amqp\sender\business\MessageSenderService.java
+C:\Users\kldfatima\Desktop\TP_31\amqp-message-sender\src\main\java\com\fatimaezzahrakld\amqp\sender\configuration\RabbitMQConfig.java
+C:\Users\kldfatima\Desktop\TP_31\amqp-message-sender\src\main\java\com\fatimaezzahrakld\amqp\sender\entity\UserMessage.java

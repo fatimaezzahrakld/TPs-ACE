@@ -1,0 +1,11 @@
+# Kubernetes Namespace for Cloud Microservice Platform
+# Author: Kelladi fatimaezzahra
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cloud-platform
+  labels:
+    name: cloud-platform
+    environment: development
+    managed-by: kubectl
+    author: aitali-yassir
