@@ -10,7 +10,7 @@ metadata:
     app: cloud-microservice
     version: "1.0.0"
     managed-by: kubernetes
-    author: aitali-yassir
+    author: kelladi
 spec:
   # Number of pod replicas for load balancing and high availability
   replicas: 2

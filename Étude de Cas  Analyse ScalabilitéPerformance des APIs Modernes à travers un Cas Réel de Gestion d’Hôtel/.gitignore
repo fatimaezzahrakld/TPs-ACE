@@ -1,0 +1,29 @@
+# .gitignore
+
+# Test results
+results/
+*.jtl
+*.log
+reports/
+
+# Monitoring data
+prometheus-data/
+grafana-data/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+target/
+build/
+
+# Env files
+.env
+*.env.local

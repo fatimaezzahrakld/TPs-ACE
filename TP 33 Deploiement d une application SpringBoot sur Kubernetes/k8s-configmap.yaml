@@ -8,6 +8,6 @@ metadata:
   namespace: cloud-platform
   labels:
     app: cloud-microservice
-    author: aitali-yassir
+    author: kelladi
 data:
   app.message: "Welcome from Kubernetes ConfigMap - Cloud Platform by Kelladi fatimaezzahra"

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://hotel.com/soap/reservation"
+           targetNamespace="http://hotel.com/soap/reservation"
+           elementFormDefault="qualified">
+
+    <!-- ==================== TYPES ==================== -->
+    
+    <xs:simpleType name="statutReservation">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="EN_ATTENTE"/>
+            <xs:enumeration value="CONFIRMEE"/>
+            <xs:enumeration value="ANNULEE"/>
+            <xs:enumeration value="TERMINEE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeChambre">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SIMPLE"/>
+            <xs:enumeration value="DOUBLE"/>
+            <xs:enumeration value="SUITE"/>
+            <xs:enumeration value="DELUXE"/>
+            <xs:enumeration value="FAMILIALE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="client">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" minOccurs="0"/>
+            <xs:element name="nom" type="xs:string"/>
+            <xs:element name="prenom" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+            <xs:element name="telephone" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="chambre">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" minOccurs="0"/>
+            <xs:element name="numero" type="xs:string"/>
+            <xs:element name="type" type="tns:typeChambre"/>
+            <xs:element name="prix" type="xs:decimal"/>
+            <xs:element name="disponible" type="xs:boolean"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="capaciteMax" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="reservation">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" minOccurs="0"/>
+            <xs:element name="client" type="tns:client"/>
+            <xs:element name="chambre" type="tns:chambre"/>
+            <xs:element name="dateDebut" type="xs:date"/>
+            <xs:element name="dateFin" type="xs:date"/>
+            <xs:element name="statut" type="tns:statutReservation"/>
+            <xs:element name="preferences" type="xs:string" minOccurs="0"/>
+            <xs:element name="nombrePersonnes" type="xs:int" minOccurs="0"/>
+            <xs:element name="prixTotal" type="xs:decimal" minOccurs="0"/>
+            <xs:element name="commentaires" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ==================== RESERVATION OPERATIONS ==================== -->
+
+    <!-- Get All Reservations -->
+    <xs:element name="getAllReservationsRequest">
+        <xs:complexType/>
+    </xs:element>
+
+    <xs:element name="getAllReservationsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reservations" type="tns:reservation" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Reservation By ID -->
+    <xs:element name="getReservationByIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getReservationByIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reservation" type="tns:reservation" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Create Reservation -->
+    <xs:element name="createReservationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clientId" type="xs:long"/>
+                <xs:element name="chambreId" type="xs:long"/>
+                <xs:element name="dateDebut" type="xs:date"/>
+                <xs:element name="dateFin" type="xs:date"/>
+                <xs:element name="preferences" type="xs:string" minOccurs="0"/>
+                <xs:element name="nombrePersonnes" type="xs:int" minOccurs="0"/>
+                <xs:element name="commentaires" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createReservationResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reservation" type="tns:reservation"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Update Reservation -->
+    <xs:element name="updateReservationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+                <xs:element name="clientId" type="xs:long"/>
+                <xs:element name="chambreId" type="xs:long"/>
+                <xs:element name="dateDebut" type="xs:date"/>
+                <xs:element name="dateFin" type="xs:date"/>
+                <xs:element name="preferences" type="xs:string" minOccurs="0"/>
+                <xs:element name="nombrePersonnes" type="xs:int" minOccurs="0"/>
+                <xs:element name="commentaires" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="updateReservationResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reservation" type="tns:reservation"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Delete Reservation -->
+    <xs:element name="deleteReservationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteReservationResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="success" type="xs:boolean"/>
+                <xs:element name="message" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Reservations By Client -->
+    <xs:element name="getReservationsByClientRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clientId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getReservationsByClientResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reservations" type="tns:reservation" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ==================== CLIENT OPERATIONS ==================== -->
+
+    <!-- Get All Clients -->
+    <xs:element name="getAllClientsRequest">
+        <xs:complexType/>
+    </xs:element>
+
+    <xs:element name="getAllClientsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clients" type="tns:client" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Client By ID -->
+    <xs:element name="getClientByIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getClientByIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="client" type="tns:client" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Create Client -->
+    <xs:element name="createClientRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="nom" type="xs:string"/>
+                <xs:element name="prenom" type="xs:string"/>
+                <xs:element name="email" type="xs:string"/>
+                <xs:element name="telephone" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createClientResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="client" type="tns:client"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ==================== CHAMBRE OPERATIONS ==================== -->
+
+    <!-- Get All Chambres -->
+    <xs:element name="getAllChambresRequest">
+        <xs:complexType/>
+    </xs:element>
+
+    <xs:element name="getAllChambresResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="chambres" type="tns:chambre" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Get Available Chambres -->
+    <xs:element name="getAvailableChambresRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="dateDebut" type="xs:date"/>
+                <xs:element name="dateFin" type="xs:date"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAvailableChambresResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="chambres" type="tns:chambre" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

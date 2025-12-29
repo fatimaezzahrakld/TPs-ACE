@@ -9,7 +9,7 @@ metadata:
   labels:
     app: cloud-microservice
     version: "1.0.0"
-    author: aitali-yassir
+    author: kelladi
 spec:
   # NodePort type allows external access to the service
   type: NodePort

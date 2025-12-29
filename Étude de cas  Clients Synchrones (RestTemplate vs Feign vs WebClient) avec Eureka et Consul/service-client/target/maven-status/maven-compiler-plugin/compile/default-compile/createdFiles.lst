@@ -1,0 +1,8 @@
+com\example\client\controller\ClientController.class
+com\example\client\client\VoitureFeignClient.class
+com\example\client\config\WebClientConfig.class
+com\example\client\config\RestTemplateConfig.class
+com\example\client\service\VoitureClientRest.class
+com\example\client\model\Voiture.class
+com\example\client\service\VoitureClientWeb.class
+com\example\client\ServiceClientApplication.class

@@ -1,0 +1,213 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.hotel.grpc.gen";
+option java_outer_classname = "ReservationProto";
+
+package hotel;
+
+// ==================== SERVICES ====================
+
+service ReservationService {
+    // Reservation operations
+    rpc GetAllReservations (Empty) returns (ReservationList);
+    rpc GetReservationById (GetByIdRequest) returns (ReservationResponse);
+    rpc CreateReservation (CreateReservationRequest) returns (ReservationResponse);
+    rpc UpdateReservation (UpdateReservationRequest) returns (ReservationResponse);
+    rpc DeleteReservation (GetByIdRequest) returns (DeleteResponse);
+    rpc GetReservationsByClient (GetByIdRequest) returns (ReservationList);
+    rpc GetReservationsByStatus (GetByStatusRequest) returns (ReservationList);
+    rpc UpdateReservationStatus (UpdateStatusRequest) returns (ReservationResponse);
+    
+    // Streaming for bulk operations
+    rpc StreamReservations (Empty) returns (stream ReservationResponse);
+}
+
+service ClientService {
+    rpc GetAllClients (Empty) returns (ClientList);
+    rpc GetClientById (GetByIdRequest) returns (ClientResponse);
+    rpc CreateClient (CreateClientRequest) returns (ClientResponse);
+    rpc UpdateClient (UpdateClientRequest) returns (ClientResponse);
+    rpc DeleteClient (GetByIdRequest) returns (DeleteResponse);
+    rpc SearchClients (SearchRequest) returns (ClientList);
+}
+
+service ChambreService {
+    rpc GetAllChambres (Empty) returns (ChambreList);
+    rpc GetChambreById (GetByIdRequest) returns (ChambreResponse);
+    rpc CreateChambre (CreateChambreRequest) returns (ChambreResponse);
+    rpc UpdateChambre (UpdateChambreRequest) returns (ChambreResponse);
+    rpc DeleteChambre (GetByIdRequest) returns (DeleteResponse);
+    rpc GetAvailableChambres (Empty) returns (ChambreList);
+    rpc GetChambresForDates (DateRangeRequest) returns (ChambreList);
+}
+
+// ==================== ENUMS ====================
+
+enum StatutReservation {
+    EN_ATTENTE = 0;
+    CONFIRMEE = 1;
+    ANNULEE = 2;
+    TERMINEE = 3;
+}
+
+enum TypeChambre {
+    SIMPLE = 0;
+    DOUBLE = 1;
+    SUITE = 2;
+    DELUXE = 3;
+    FAMILIALE = 4;
+}
+
+// ==================== MESSAGES ====================
+
+message Empty {}
+
+message GetByIdRequest {
+    int64 id = 1;
+}
+
+message SearchRequest {
+    string query = 1;
+}
+
+message GetByStatusRequest {
+    StatutReservation statut = 1;
+}
+
+message DateRangeRequest {
+    string date_debut = 1;
+    string date_fin = 2;
+}
+
+message DeleteResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+// Client messages
+message Client {
+    int64 id = 1;
+    string nom = 2;
+    string prenom = 3;
+    string email = 4;
+    string telephone = 5;
+    string created_at = 6;
+    string updated_at = 7;
+}
+
+message ClientResponse {
+    Client client = 1;
+}
+
+message ClientList {
+    repeated Client clients = 1;
+}
+
+message CreateClientRequest {
+    string nom = 1;
+    string prenom = 2;
+    string email = 3;
+    string telephone = 4;
+}
+
+message UpdateClientRequest {
+    int64 id = 1;
+    string nom = 2;
+    string prenom = 3;
+    string email = 4;
+    string telephone = 5;
+}
+
+// Chambre messages
+message Chambre {
+    int64 id = 1;
+    string numero = 2;
+    TypeChambre type = 3;
+    double prix = 4;
+    bool disponible = 5;
+    string description = 6;
+    int32 capacite_max = 7;
+    repeated string equipements = 8;
+    string created_at = 9;
+    string updated_at = 10;
+}
+
+message ChambreResponse {
+    Chambre chambre = 1;
+}
+
+message ChambreList {
+    repeated Chambre chambres = 1;
+}
+
+message CreateChambreRequest {
+    string numero = 1;
+    TypeChambre type = 2;
+    double prix = 3;
+    bool disponible = 4;
+    string description = 5;
+    int32 capacite_max = 6;
+    repeated string equipements = 7;
+}
+
+message UpdateChambreRequest {
+    int64 id = 1;
+    string numero = 2;
+    TypeChambre type = 3;
+    double prix = 4;
+    bool disponible = 5;
+    string description = 6;
+    int32 capacite_max = 7;
+    repeated string equipements = 8;
+}
+
+// Reservation messages
+message Reservation {
+    int64 id = 1;
+    Client client = 2;
+    Chambre chambre = 3;
+    string date_debut = 4;
+    string date_fin = 5;
+    StatutReservation statut = 6;
+    string preferences = 7;
+    int32 nombre_personnes = 8;
+    double prix_total = 9;
+    string commentaires = 10;
+    string created_at = 11;
+    string updated_at = 12;
+}
+
+message ReservationResponse {
+    Reservation reservation = 1;
+}
+
+message ReservationList {
+    repeated Reservation reservations = 1;
+}
+
+message CreateReservationRequest {
+    int64 client_id = 1;
+    int64 chambre_id = 2;
+    string date_debut = 3;
+    string date_fin = 4;
+    string preferences = 5;
+    int32 nombre_personnes = 6;
+    string commentaires = 7;
+}
+
+message UpdateReservationRequest {
+    int64 id = 1;
+    int64 client_id = 2;
+    int64 chambre_id = 3;
+    string date_debut = 4;
+    string date_fin = 5;
+    string preferences = 6;
+    int32 nombre_personnes = 7;
+    string commentaires = 8;
+}
+
+message UpdateStatusRequest {
+    int64 id = 1;
+    StatutReservation statut = 2;
+}

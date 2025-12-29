@@ -8,4 +8,4 @@ metadata:
     name: cloud-platform
     environment: development
     managed-by: kubectl
-    author: aitali-yassir
+    author: kelladi
